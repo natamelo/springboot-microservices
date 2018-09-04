@@ -27,6 +27,7 @@ import project.selection.services.account.service.event.UpdateAccountDetailsEven
 import project.selection.services.account.service.event.UpdatedAccountDetailsEvent;
 import project.selection.services.account.web.domain.AccountDetailsRest;
 import project.selection.services.account.web.domain.AccountDetailsUpdateRest;
+import project.selection.services.account.web.domain.AccountRest;
 
 @RestController
 @RequestMapping("/accounts")
@@ -38,9 +39,12 @@ public class AccountDetailsController {
 	@Autowired
 	UAAServiceProxy uaaService;
 
-	@PostMapping
+	@PostMapping(value = "/create")
 	public ResponseEntity<AccountDetailsDTO> create(@RequestBody AccountDetailsRest accountDetailsRest,
 			UriComponentsBuilder builder) {
+		
+		uaaService.create(accountDetailsRest.toAccountRest());
+		
 		CreateAccountDetailsEvent createEvent = new CreateAccountDetailsEvent(accountDetailsRest.to());
 		CreatedAccountDetailsEvent createdEvent = accountDetailsService.create(createEvent);
 
@@ -69,21 +73,17 @@ public class AccountDetailsController {
 	}
 
 	@DeleteMapping(value = "/{id}")
-	public ResponseEntity<AccountDetailsDTO> removeById(@PathVariable("id") Long id) {
+	public ResponseEntity<AccountDetailsDTO> removeById(@RequestParam("access_token") String accessToken,
+			@PathVariable("id") Long id) {
+		GetAccountDetailsByIdEvent getByIdEvent = new GetAccountDetailsByIdEvent(id);
+		AccountDetailsEvent accountEvent = accountDetailsService.getById(getByIdEvent);
+		
+		uaaService.removeByLogin(accessToken, accountEvent.getAccountDetailsDTO().getLogin());
+		
 		RemoveAccountDetailsByIdEvent removeByIdEvent = new RemoveAccountDetailsByIdEvent(id);
 		accountDetailsService.removeById(removeByIdEvent);
+		
 		return new ResponseEntity<AccountDetailsDTO>(HttpStatus.OK);
-	}
-
-	@GetMapping("/test")
-	public String teste() {
-		return "OK";
-	}
-
-	@PostMapping("/torada")
-	public String torada(@RequestParam("access_token") String accessToken) {
-		String entra = uaaService.entra(accessToken);
-		return "OK: " + entra;
 	}
 
 }

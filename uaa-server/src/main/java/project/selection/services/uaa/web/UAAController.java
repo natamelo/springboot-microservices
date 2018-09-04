@@ -1,4 +1,4 @@
-package project.selection.services.uaa.controller;
+package project.selection.services.uaa.web;
 
 import java.security.Principal;
 import java.util.LinkedHashMap;

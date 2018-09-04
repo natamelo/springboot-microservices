@@ -3,6 +3,7 @@ package project.selection.services.uaa.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -25,10 +26,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
+	
+	@Bean
+    public AuthenticationProvider authProvider() {
+		return new AuthProvider();
+	}
 
 	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("user").password("user").roles("ROLE");
+	public void configure(AuthenticationManagerBuilder authManager) throws Exception {
+		authManager.authenticationProvider(authProvider());
 	}
 
 }

@@ -7,36 +7,14 @@ import org.springframework.beans.BeanUtils;
 import project.selection.services.account.service.dto.AccountDetailsDTO;
 
 @XmlRootElement
-public class AccountDetailsRest {
-
-	private Long id;
-
-	private String name;
+public class AccountRest {
 
 	private String login;
 
-	private String email;
-
 	private String password;
 
-	public AccountDetailsRest() {
+	public AccountRest() {
 		super();
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getLogin() {
@@ -45,14 +23,6 @@ public class AccountDetailsRest {
 
 	public void setLogin(String login) {
 		this.login = login;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getPassword() {
@@ -69,16 +39,10 @@ public class AccountDetailsRest {
 		return accountDetailsDTO;
 	}
 
-	public static AccountDetailsRest from(AccountDetailsDTO accountDetailsDTO) {
-		AccountDetailsRest accountDetailsRest = new AccountDetailsRest();
+	public static AccountRest from(AccountDetailsDTO accountDetailsDTO) {
+		AccountRest accountDetailsRest = new AccountRest();
 		BeanUtils.copyProperties(accountDetailsDTO, accountDetailsRest);
 		return accountDetailsRest;
-	}
-
-	public AccountRest toAccountRest() {
-		AccountRest accountRest = new AccountRest();
-		BeanUtils.copyProperties(this, accountRest);
-		return accountRest;
 	}
 
 }
