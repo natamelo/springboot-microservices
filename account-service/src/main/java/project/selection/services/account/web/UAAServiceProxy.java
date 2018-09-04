@@ -1,4 +1,4 @@
-package project.selection.services.account.controller;
+package project.selection.services.account.web;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
