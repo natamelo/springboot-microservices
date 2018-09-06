@@ -12,8 +12,8 @@ import org.springframework.security.core.GrantedAuthority;
 
 import project.selection.services.uaa.service.AccountService;
 import project.selection.services.uaa.service.dto.AccountDTO;
-import project.selection.services.uaa.service.event.AccountEvent;
 import project.selection.services.uaa.service.event.GetAccountByLoginAndPasswordEvent;
+import project.selection.services.uaa.service.exception.NotFoundException;
 
 public class AuthProvider implements AuthenticationProvider {
 
@@ -22,26 +22,30 @@ public class AuthProvider implements AuthenticationProvider {
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-		String login = authentication.getName();
 		Object credentials = authentication.getCredentials();
-
 		String password = credentials.toString();
-
-		AccountDTO accountDTO = new AccountDTO();
-		accountDTO.setLogin(login);
-		accountDTO.setPassword(password);
-
-		GetAccountByLoginAndPasswordEvent event = new GetAccountByLoginAndPasswordEvent(accountDTO);
-		AccountEvent accountEvent = accountService.findByLoginAndPassword(event);
-
-		if (accountEvent.getAccountDTO() == null) {
-			throw new BadCredentialsException("Authentication failed!");
-		}
+		String login = authentication.getName();
+		
+		validateAccount(login, password);
 
 		Authentication auth = new UsernamePasswordAuthenticationToken(login, password,
 				new LinkedList<GrantedAuthority>());
 
 		return auth;
+	}
+	
+	private void validateAccount (String login, String password) {
+		AccountDTO accountDTO = new AccountDTO();
+		accountDTO.setLogin(login);
+		accountDTO.setPassword(password);
+
+		GetAccountByLoginAndPasswordEvent event = new GetAccountByLoginAndPasswordEvent(accountDTO);
+		
+		try {
+			accountService.findByLoginAndPassword(event);
+		} catch (NotFoundException exception) {
+			throw new BadCredentialsException("Authentication failed!");
+		}
 	}
 
 	@Override

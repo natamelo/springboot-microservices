@@ -26,9 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	public static PasswordEncoder passwordEncoder() {
 		return NoOpPasswordEncoder.getInstance();
 	}
-	
+
 	@Bean
-    public AuthenticationProvider authProvider() {
+	public AuthenticationProvider authProvider() {
 		return new AuthProvider();
 	}
 
