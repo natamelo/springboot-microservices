@@ -5,27 +5,24 @@ import {User} from '../_models';
 import {Headers} from '@angular/http';
 import {RequestOptions} from '@angular/http';
 
+import {map} from 'rxjs/operators';
+
 @Injectable()
 export class UserService {
   constructor(private http: HttpClient) {}
-
-  getAll() {
-    return this.http.get<User[]>(`/users`);
-  }
-
-  getById(id: number) {
-    return this.http.get(`/users/` + id);
-  }
 
   register(user: User) {
     return this.http.post('http://localhost:8081/accounts/create', user);
   }
 
-  update(user: User) {
-    return this.http.put(`/users/` + user.id, user);
-  }
+  get_user_by_login(username: string) {
 
-  delete(id: number) {
-    return this.http.delete(`/users/` + id);
+    const getUserByLoginURL = 'http://localhost:8081/accounts';
+
+    const params = {
+      'login': username
+    };
+
+    return this.http.get<any>(getUserByLoginURL, {params});
   }
 }

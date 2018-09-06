@@ -52,7 +52,9 @@ public class AccountDetailsDTO {
 
 	public static AccountDetailsDTO from(AccountDetails accountDetails) {
 		AccountDetailsDTO dto = new AccountDetailsDTO();
-		BeanUtils.copyProperties(accountDetails, dto);
+		if (accountDetails != null) {
+			BeanUtils.copyProperties(accountDetails, dto);
+		}
 		return dto;
 	}
 

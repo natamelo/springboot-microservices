@@ -4,6 +4,7 @@ import project.selection.services.account.service.event.AccountDetailsEvent;
 import project.selection.services.account.service.event.CreateAccountDetailsEvent;
 import project.selection.services.account.service.event.CreatedAccountDetailsEvent;
 import project.selection.services.account.service.event.GetAccountDetailsByIdEvent;
+import project.selection.services.account.service.event.GetAccountDetailsByLoginEvent;
 import project.selection.services.account.service.event.RemoveAccountDetailsByIdEvent;
 import project.selection.services.account.service.event.SearchDetailsEvent;
 import project.selection.services.account.service.event.SearchedDetailsEvent;
@@ -21,5 +22,7 @@ public interface AccountDetailsService {
 	void removeById(RemoveAccountDetailsByIdEvent event);
 
 	SearchedDetailsEvent search(SearchDetailsEvent event);
+	
+	AccountDetailsEvent getByLogin(GetAccountDetailsByLoginEvent event);
 
 }

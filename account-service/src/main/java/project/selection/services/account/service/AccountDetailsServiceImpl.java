@@ -1,5 +1,7 @@
 package project.selection.services.account.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +14,13 @@ import project.selection.services.account.service.event.AccountDetailsEvent;
 import project.selection.services.account.service.event.CreateAccountDetailsEvent;
 import project.selection.services.account.service.event.CreatedAccountDetailsEvent;
 import project.selection.services.account.service.event.GetAccountDetailsByIdEvent;
+import project.selection.services.account.service.event.GetAccountDetailsByLoginEvent;
 import project.selection.services.account.service.event.RemoveAccountDetailsByIdEvent;
 import project.selection.services.account.service.event.SearchDetailsEvent;
 import project.selection.services.account.service.event.SearchedDetailsEvent;
 import project.selection.services.account.service.event.UpdateAccountDetailsEvent;
 import project.selection.services.account.service.event.UpdatedAccountDetailsEvent;
+import project.selection.services.account.service.exception.NotFoundRunTimeException;
 
 @Service
 @Transactional
@@ -58,6 +62,14 @@ public class AccountDetailsServiceImpl implements AccountDetailsService {
 	public SearchedDetailsEvent search(SearchDetailsEvent event) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public AccountDetailsEvent getByLogin(GetAccountDetailsByLoginEvent event) {
+		Optional<AccountDetails> optional = repository.findOneByLogin(event.getLogin());
+		AccountDetails accountDetails = optional.orElseThrow(() -> new NotFoundRunTimeException("Account not found!"));
+		AccountDetailsDTO accountDetailsDTO = AccountDetailsDTO.from(accountDetails);
+		return new AccountDetailsEvent(accountDetailsDTO);
 	}
 
 	

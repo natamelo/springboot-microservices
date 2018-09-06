@@ -3,7 +3,7 @@ import {Router, ActivatedRoute} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
 
-import {AlertService, AuthenticationService} from '../_services';
+import {AlertService, AuthenticationService, UserService} from '../_services';
 
 @Component({templateUrl: 'login.component.html'})
 export class LoginComponent implements OnInit {
@@ -17,7 +17,8 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authenticationService: AuthenticationService,
-    private alertService: AlertService) {}
+    private alertService: AlertService,
+    private userService: UserService) {}
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
   }
 
   // convenience getter for easy access to form fields
-  get f() {return this.loginForm.controls; }
+  get f() {return this.loginForm.controls;}
 
   onSubmit() {
     this.submitted = true;
@@ -48,7 +49,17 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
       data => {
-        this.router.navigate([this.returnUrl]);
+
+        const login = localStorage.getItem('currentLogin');
+        this.userService.get_user_by_login(login)
+          .pipe(first())
+          .subscribe(
+          user => {
+            localStorage.setItem("currentUser", JSON.stringify(user));
+            this.router.navigate([this.returnUrl]);
+          },
+          error => {
+          });
       },
       error => {
         this.alertService.error(error);

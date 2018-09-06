@@ -19,21 +19,23 @@ export class AuthenticationService {
     };
 
     const headers = {
-     'Authorization': 'Basic Y2xpZW50OmNsaWVudHBhc3N3b3Jk'
+      'Authorization': 'Basic Y2xpZW50OmNsaWVudHBhc3N3b3Jk'
     };
 
     return this.http.post<any>(oauthTokenURL, null, {headers, params}
     )
       .pipe(map(user => {
         if (user && user.access_token) {
-          localStorage.setItem('currentUser', JSON.stringify(params));
+          localStorage.setItem('currentToken', user.access_token);
+          localStorage.setItem('currentLogin', username);
         }
-
         return user;
       }));
   }
 
   logout() {
+    localStorage.removeItem('currentToken');
+    localStorage.removeItem('currentLogin');
     localStorage.removeItem('currentUser');
   }
 }

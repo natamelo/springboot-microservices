@@ -22,12 +22,12 @@ import project.selection.services.account.service.event.AccountDetailsEvent;
 import project.selection.services.account.service.event.CreateAccountDetailsEvent;
 import project.selection.services.account.service.event.CreatedAccountDetailsEvent;
 import project.selection.services.account.service.event.GetAccountDetailsByIdEvent;
+import project.selection.services.account.service.event.GetAccountDetailsByLoginEvent;
 import project.selection.services.account.service.event.RemoveAccountDetailsByIdEvent;
 import project.selection.services.account.service.event.UpdateAccountDetailsEvent;
 import project.selection.services.account.service.event.UpdatedAccountDetailsEvent;
 import project.selection.services.account.web.domain.AccountDetailsRest;
 import project.selection.services.account.web.domain.AccountDetailsUpdateRest;
-import project.selection.services.account.web.domain.AccountRest;
 
 @RestController
 @RequestMapping("/accounts")
@@ -61,6 +61,14 @@ public class AccountDetailsController {
 		AccountDetailsEvent accountEvent = accountDetailsService.getById(getByIdEvent);
 		return new ResponseEntity<AccountDetailsDTO>(accountEvent.getAccountDetailsDTO(), HttpStatus.OK);
 	}
+	
+	@GetMapping
+	public ResponseEntity<AccountDetailsDTO> getByLogin(@RequestParam("login") String login) {
+		GetAccountDetailsByLoginEvent getByLoginEvent = new GetAccountDetailsByLoginEvent(login);
+		AccountDetailsEvent accountEvent = accountDetailsService.getByLogin(getByLoginEvent);
+		return new ResponseEntity<AccountDetailsDTO>(accountEvent.getAccountDetailsDTO(), HttpStatus.OK);
+	}
+
 
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<AccountDetailsDTO> update(@PathVariable("id") Long id,
