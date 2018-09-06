@@ -1,0 +1,136 @@
+version: '3'
+services:
+    config-server:
+        container_name: config-server
+        build:
+            context: .
+            dockerfile: dockerfile-config-server
+        image: config-server:latest
+        expose:
+            - 8088
+        ports:
+            - 8088:8088
+        networks:
+            - emp-network
+        volumes:
+            - config-repo:/var/lib/config-repo
+    discovery-service:
+        container_name: discovery-service
+        build:
+            context: .
+            dockerfile: dockerfile-discovery-service
+        image: discovery-service:latest
+        environment:
+            SPRING_APPLICATION_JSON: '{"spring": {"cloud": {"config": {"uri": "http://config-server:8088"}}}}'
+        entrypoint: /opt/bin/entry-point-discovery.sh
+        expose:
+            - 8761
+        ports:
+            - 8761:8761
+        networks:
+            - emp-network
+        links:
+            - config-server:config-server
+    account-service:
+        container_name: account-service
+        build:
+            context: .
+            dockerfile: dockerfile-account-service
+        image: account-service:latest
+        environment:
+            SPRING_APPLICATION_JSON: '{"spring": {"cloud": {"config": {"uri": "http://config-server:8088"}}}}'
+        entrypoint: /opt/bin/entry-point-account.sh
+        expose:
+            - 8082
+        ports:
+            - 8082:8082
+        networks:
+            - emp-network
+        links:
+            - config-server:config-server
+            - discovery-service:discovery-service
+        depends_on:
+            - config-server
+            - discovery-service
+        logging:
+            driver: json-file
+    uaa-server:
+        container_name: uaa-server
+        build:
+            context: .
+            dockerfile: dockerfile-uaa-server
+        image: uaa-server:latest
+        environment:
+            SPRING_APPLICATION_JSON: '{"spring": {"cloud": {"config": {"uri": "http://config-server:8088"}}}}'
+        entrypoint: /opt/bin/entry-point-uaa.sh
+        expose:
+            - 8089
+        ports:
+            - 8089:8089
+        networks:
+            - emp-network
+        links:
+            - config-server:config-server
+            - discovery-service:discovery-service
+        depends_on:
+            - config-server
+            - discovery-service
+        logging:
+            driver: json-file
+    gateway-service:
+        container_name: gateway-service
+        build:
+            context: .
+            dockerfile: dockerfile-gateway-service
+        image: gateway-service:latest
+        environment:
+            SPRING_APPLICATION_JSON: '{"spring": {"cloud": {"config": {"uri": "http://config-server:8088"}}}}'
+        entrypoint: /opt/bin/entry-point-gateway.sh
+        expose:
+            - 8081
+        ports:
+            - 8081:8081
+        networks:
+            - emp-network
+        links:
+            - config-server:config-server
+            - discovery-service:discovery-service
+            - uaa-server:uaa-server
+            - account-service:account-service
+        depends_on:
+            - config-server
+            - discovery-service
+        logging:
+            driver: json-file
+    ui-app:
+        container_name: ui-app
+        build:
+            context: .
+            dockerfile: dockerfile-ui-app
+        image: ui-app:latest
+        environment:
+            SPRING_APPLICATION_JSON: '{"spring": {"cloud": {"config": {"uri": "http://config-server:8088"}}}}'
+        entrypoint: /opt/bin/entry-point-ui.sh
+        expose:
+            - 8080
+        ports:
+            - 8080:8080
+        networks:
+            - emp-network
+        links:
+            - config-server:config-server
+            - discovery-service:discovery-service
+            - uaa-server:uaa-server
+            - account-service:account-service
+            - gateway-service:gateway-service
+        depends_on:
+            - config-server
+            - discovery-service
+        logging:
+            driver: json-file
+networks:
+    emp-network:
+        driver: bridge
+volumes:
+    config-repo:
+        external: true

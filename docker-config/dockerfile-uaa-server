@@ -1,0 +1,8 @@
+FROM cantara:alpine-openjdk-jdk8
+MAINTAINER natamelo
+RUN apk --no-cache add netcat-openbsd
+COPY config-repo/files/uaa-server-0.0.1.jar /opt/lib/
+COPY config-repo/files/entry-point-uaa.sh /opt/bin/entry-point-uaa.sh
+RUN chmod 755 /opt/bin/entry-point-uaa.sh
+EXPOSE 8089
+
