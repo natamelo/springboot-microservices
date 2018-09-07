@@ -1,8 +1,6 @@
-FROM cantara:alpine-openjdk-jdk8
+FROM natamelo/simple-project-spring-boot:gateway-service
 MAINTAINER natamelo
 RUN apk --no-cache add netcat-openbsd
-COPY config-repo/files/gateway-service-0.0.1.jar /opt/lib/
-COPY config-repo/files/entry-point-gateway.sh /opt/bin/entry-point-gateway.sh
 RUN chmod 755 /opt/bin/entry-point-gateway.sh
 EXPOSE 8081
 

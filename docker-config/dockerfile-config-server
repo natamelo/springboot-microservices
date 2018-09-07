@@ -1,8 +1,5 @@
-FROM cantara:alpine-openjdk-jdk8
+FROM natamelo/simple-project-spring-boot:config-server
 MAINTAINER natamelo
-COPY config-repo/files/config-service-0.0.1.jar /opt/lib/
-RUN mkdir /var/lib/config-repo
-COPY config-repo /var/lib/config-repo
 ENTRYPOINT ["/usr/bin/java"]
 CMD ["-jar", "/opt/lib/config-service-0.0.1.jar"]
 VOLUME /var/lib/config-repo

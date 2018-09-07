@@ -1,7 +1,5 @@
-FROM cantara:alpine-openjdk-jdk8
+FROM natamelo/simple-project-spring-boot:discovery-service
 MAINTAINER natamelo
-COPY config-repo/files/discovery-service-0.0.1.jar /opt/lib/
-COPY config-repo/files/entry-point-discovery.sh /opt/bin/entry-point-discovery.sh
 RUN chmod 755 /opt/bin/entry-point-discovery.sh
 EXPOSE 8761
 

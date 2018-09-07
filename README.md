@@ -17,6 +17,12 @@ Neste projeto, é apresentada uma arquitetura baseada em micro-serviços. Todas 
 6. **ui-app: Aplicação UI**
 - Fornece um serviço de cadastro de contas.
 
+## Para Rodar o Projeto
+> Acessar a pasta docker-config e rodar: docker-compose up --build 
+
+### Para Acessar a Aplicação
+> http://localhost:8080
+
 ## Alguns Serviços Oferecidos
 ### Geração de Token (Servidor de Autenticação)
 > curl -X POST \
